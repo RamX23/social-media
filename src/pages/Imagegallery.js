@@ -11,7 +11,7 @@ const navigate=useNavigate();
    
     useEffect(()=>{
 
-        axios.get("http://localhost:3000/images")
+        axios.get(`${window.location.origin}/images`)
         .then(res=>{
             console.log(res.data);
             setimages(res.data);
@@ -21,14 +21,15 @@ const navigate=useNavigate();
         })
 },[])
 
-const handleLike = (imageId) => {
-  const updatedImages = images.map(image =>
+const handleLike = async(e,imageId) => {
+  e.preventDefault();
+  const updatedImages =await images.map(image =>
       image._id === imageId ? { ...image, likes: image.likes + 1 } : image
   );
   setimages(updatedImages);
 
 
-  axios.post('http://localhost:3000/like', { imageId })
+  axios.post(`${window.location.origin}/like`, { imageId })
       .then(res => {
           console.log('Like updated for image:', res.data);
       })
@@ -39,7 +40,7 @@ const handleLike = (imageId) => {
 
 const handlecomment = (imageId) => {
 
-  axios.post('http://localhost:3000/comment', { imageId, text: comment })
+  axios.post(`${window.location.origin}/comment`, { imageId, text: comment })
       .then(res => {
          
           const updatedImages = images.map(image =>
@@ -48,28 +49,29 @@ const handlecomment = (imageId) => {
           setimages(updatedImages);
           setcomment('');
           console.log('Comment added:', res.data);
-          window.location.reload(); 
+        
       })
       .catch(error => {
           console.error('Error adding comment:', error);
       });
 };
-const handleInputChange = (imageId, value) => {
+const handleInputChange = (e,imageId, value) => {
+  e.preventDefault();
   setcomment({ ...comment, [imageId]: value });
 };
 
 
-const handledelete = (imageId) => {
-  axios.delete(`http://localhost:3000/delete/${imageId}`)
-  window.location.reload(); 
-//   .then(res => {
-//     console.log('Post deleted:', res.data);
-//     setimages(images.filter(image => image._id !== imageId));
-    
-// })
-// .catch(error => {
-//     console.error('Error deleting post:', error);
-// });
+const handledelete = async(e,imageId) => {
+  e.preventDefault();
+   await axios.delete(`${window.location.origin}/delete/${imageId}`)
+  // window.location.reload(); 
+  .then(res => {
+    console.log('Post deleted:', res.data);
+    setimages(images.filter(image => image._id !== imageId));
+})
+.catch(error => {
+    console.error('Error deleting post:', error);
+});
   
 };
 
@@ -81,7 +83,7 @@ const handledelete = (imageId) => {
                            
                 
                     <div className="card d-flex justify-center" key={image._id} style={{width: '30rem',maxHeight:'50rem'}}>
-                    <img src={`http://localhost:3000/uploads/${image.filename}`} class="card-img-top" alt="..." style={{objectFit:'cover',maxHeight:'30rem'}}/>
+                    <img src={`${window.location.origin}/uploads/${image.filename}`} class="card-img-top" alt="..." style={{objectFit:'cover',maxHeight:'30rem'}}/>
                     <div class="card-body">
                       <div className="icons d-flex justify-content-start align-items-center gap-1">
                       <button className='btn btn-outline-black' onClick={()=>handleLike(image._id)}><i class="fa-regular fa-heart fs-5"></i></button>

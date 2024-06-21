@@ -23,7 +23,7 @@ const Signup = () => {
         setusername('');
         setemail('');
         setpassword('');
-        await axios.post('http://localhost:3000/signup', {
+        await axios.post(`${window.location.origin}/signup`, {
           email,
           username,
           password,

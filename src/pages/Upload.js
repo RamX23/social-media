@@ -5,19 +5,17 @@ const Upload = () => {
   const navigate=useNavigate();
     const [file,setfile]=useState(null);
 
-    const handleupload=()=>{
+    const handleupload=async(e)=>{
+      e.preventDefault();
       const formData = new FormData();
       formData.append('image', file);
       
-      axios.post('http://localhost:3000/upload', formData, {
+      await axios.post(`${window.location.origin}/upload`, formData, {
           headers: {
               'Content-Type': 'multipart/form-data'
           }
       })
       navigate('/home')
-     
-      
-      
     }
   return (
     <div>
